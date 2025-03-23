@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+   <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(-45deg, #1E1E2E, #2A2A4E, #1E1E3F, #2A2A4E);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            color: #EAEAEA;
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        /* CSS untuk animasi typing */
+        .typing-indicator {
+            display: none; /* Sembunyikan secara default */
+            align-self: flex-start;
+            background-color: #1E1E3F;
+            padding: 8px 12px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            display: inline-flex;
+            gap: 4px;
+        }
+
+        .typing-indicator .dot {
+            width: 6px;
+            height: 6px;
+            background-color: #EAEAEA;
+            border-radius: 50%;
+            animation: typing 1.2s infinite ease-in-out;
+        }
+
+        .typing-indicator .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-4px);
+            }
+        }
+
+        /* CSS untuk chat box */
+        .chat-bot-popup {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .chat-bot-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #4ADE80;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .chat-bot-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-bot-icon img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .chat-box {
+            width: 350px;
+            height: 450px;
+            background-color: #2A2A4E;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            display: none; /* Sembunyikan secara default */
+            flex-direction: column;
+            overflow: hidden;
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background-color: #1E1E3F;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-bot {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-bot img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .bot-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bot-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #EAEAEA;
+        }
+
+        .bot-version {
+            font-size: 12px;
+            color: #9CA3AF;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #EAEAEA;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            background-color: #2A2A4E;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .message.bot {
+            align-self: flex-start;
+        }
+
+        .message.user {
+            align-self: flex-end;
+        }
+
+        .message-content {
+            background-color: #1E1E3F;
+            padding: 8px 12px;
+            border-radius: 10px;
+            max-width: 80%;
+            color: #EAEAEA;
+            font-size: 14px;
+        }
+
+        .message.user .message-content {
+            background-color: #4ADE80;
+            color: #1E1E3F;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 12px;
+            background-color: #1E1E3F;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            background-color: #2A2A4E;
+            color: #EAEAEA;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .chat-input button {
+            margin-left: 10px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #4ADE80;
+            color: #1E1E3F;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 14px;
+        }
+
+        .chat-input button:hover {
+            background-color: #3B82F6;
+        }
+        
+/* Gaya untuk daftar lagu */
+.music-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.music-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1); /* Latar belakang transparan */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.music-item:hover {
+    background: rgba(255, 255, 255, 0.2); /* Efek hover */
+}
+
+/* Gaya untuk tombol Play */
+.play-btn {
+    background: none; /* Hapus background */
+    border: none; /* Hapus border */
+    color: #EAEAEA; /* Warna teks */
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0; /* Hapus padding */
+    margin: 0; /* Hapus margin */
+    transition: color 0.3s;
+}
+
+.play-btn:hover {
+    color: #4ADE80; /* Warna teks saat hover */
+}
+
+/* Gaya untuk tombol Stop Music */
+.theme-btn.music-off {
+    background: none; /* Hapus background */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Border transparan */
+    color: #EAEAEA; /* Warna teks */
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+}
+
+.theme-btn.music-off:hover {
+    background: rgba(255, 255, 255, 0.1); /* Efek hover */
+    color: #FF6B6B; /* Warna teks saat hover */
+}
+        
+/* Settings Icon */
+.settings-icon {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background-color: #4ADE80;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s, background-color 0.3s;
+    z-index: 1000;
+}
+
+.settings-icon:hover {
+    transform: scale(1.1);
+    background-color: #3B82F6;
+}
+
+.settings-icon img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Settings Popup */
+.settings-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background-color: #2A2A4E;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    width: 300px;
+    z-index: 1001;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.settings-popup.active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    display: flex;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: #1E1E3F;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.settings-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #EAEAEA;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.settings-header .close-btn {
+    background: none;
+    border: none;
+    color: #EAEAEA;
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.settings-header .close-btn:hover {
+    color: #FF5555;
+}
+
+.settings-content {
+    padding: 16px;
+}
+
+.settings-content p {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    color: #EAEAEA;
+    font-weight: 500;
+}
+
+.theme-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.theme-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #1E1E3F;
+    color: #EAEAEA;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.theme-btn:hover {
+    background-color: #3B82F6;
+    transform: translateY(-2px);
+}
+
+.theme-btn.default {
+    background-color: #4ADE80;
+    color: #1E1E3F;
+}
+
+.theme-btn.anime {
+    background-color: #FF6B6B;
+    color: #1E1E3F;
+}
+
+#particles-js {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Letakkan di belakang konten popup */
+    pointer-events: none; /* Biarkan partikel tidak mengganggu interaksi */
+}
+
+
+/* CSS untuk partikel salju */
+#snow-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2; /* Letakkan di belakang konten */
+    pointer-events: none; /* Biarkan partikel tidak mengganggu interaksi */
+}
+
+/* Gaya untuk tombol switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4ADE80; /* Warna saat aktif */
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.switch-label {
+    margin-left: 10px;
+    font-size: 14px;
+    color: #EAEAEA;
+}
+        .navbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .navbar-logo {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar-link {
+            color: #EAEAEA;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 10px;
+            transition: color 0.3s;
+        }
+
+        .navbar-link:hover {
+            color: #4ADE80;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #2A2A4E, #1E1E3F);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .profile-container,
+        .qa-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+            animation: pulse 3s infinite;
+            z-index: 0;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .profile-picture {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #EAEAEA;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            z-index: 1;
+            animation: float 3s ease-in-out infinite, glow 1.5s infinite alternate;
+            margin: 0 auto; /* Center the picture */
+        }
+
+        @keyframes float {
+            0%,
+            100% {
+                transform: translatey(0);
+            }
+
+            50% {
+                transform: translatey(-10px);
+            }
+        }
+
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 5px rgba(74, 222, 128, 0.5);
+            }
+
+            100% {
+                box-shadow: 0 0 20px rgba(74, 222, 128, 1);
+            }
+        }
+
+        .profile-picture:hover {
+            transform: scale(1.1);
+            border-color: #4ADE80;
+        }
+
+        .typing-container {
+            display: inline-block;
+            position: relative;
+            z-index: 1;
+        }
+
+        .typing-text {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            margin: 0 auto;
+            letter-spacing: 2px;
+            color: #00BFFF;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background-color: #00BFFF;
+            animation: blink 0.75s step-end infinite;
+        }
+
+        @keyframes blink {
+            from,
+            to {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .now-playing-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .album-cover {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            animation: rotate 10s linear infinite;
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .now-playing-text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .now-playing-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #4ADE80;
+        }
+
+        .song-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #EAEAEA;
+        }
+
+        .artist-name {
+            font-size: 14px;
+            color: #9CA3AF;
+        }
+
+        .journey-card {
+            background: linear-gradient(135deg, #2A2A4E, #1E1E3F);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            height: 10px;
+            position: relative;
+        }
+
+        .progress {
+            background: linear-gradient(90deg, #4ADE80, #3B82F6);
+            height: 100%;
+            border-radius: 10px;
+            position: absolute;
+            width: 0; /* Start with 0% width */
+        }
+
+        .qa-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .qa-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            transition: background 0.3s;
+            position: relative;
+        }
+
+        .qa-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .qa-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            margin-top: 5px;
+        }
+
+        .toggle-icon {
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #121212, #1a1a1a);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Animasi Modern */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .scale-in {
+      animation: scaleIn 0.5s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .slide-in {
+      animation: slideIn 0.8s ease-out;
+    }
+
+    /* Background Gradient Animasi */
+    @keyframes gradientBackground {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .animated-gradient {
+      background: linear-gradient(270deg, #1a1a1a, #121212, #1a1a1a);
+      background-size: 200% 200%;
+      animation: gradientBackground 10s ease infinite;
+    }
+
+    /* Hover Effect 3D */
+    .card-3d {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card-3d:hover {
+      transform: perspective(1000px) rotateX(10deg) rotateY(10deg);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+        .help-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #4ADE80;
+            border-radius: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .help-icon:hover {
+            transform: scale(1.05);
+        }
+
+        .help-icon img {
+            width: 32px;
+            height: 32px;
+        }
+    </style>
+</head>
+
+<audio id="background-music" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+</audio>
+
+<body class="p-6">
+
+    <div class="chat-bot-popup" id="chat-bot-popup">
+        <div class="chat-bot-icon" onclick="toggleChat()">
+            <img src="https://files.catbox.moe/ihzbj4.jpg" alt="Chat Bot">
+        </div>
+        <div class="chat-box" id="chat-box">
+            <div class="chat-header">
+                <div class="profile-bot">
+                    <img src="https://files.catbox.moe/aqhx1d.jpg" alt="Bot Profile">
+                    <div class="bot-info">
+                        <span class="bot-name">whizz Ai</span>
+                        <span class="bot-version">v1.0</span>
+                    </div>
+                </div>
+                <button class="close-btn" onclick="toggleChat()">×</button>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <!-- Pesan akan muncul di sini -->
+                <div class="typing-indicator" id="typing-indicator">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chat-input" placeholder="Type a message...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+    
+    
+<!-- Settings Icon -->
+<div class="settings-icon" onclick="toggleSettingsPopup()">
+    <img src="https://img.icons8.com/ios-filled/50/ffffff/settings.png" alt="Settings">
+</div>
+
+
+<div class="settings-popup" id="settings-popup">
+    <div class="settings-header">
+        <h3>⚙️ Settings</h3>
+        <button class="close-btn" onclick="toggleSettingsPopup()">×</button>
+    </div>
+    <div class="settings-content">
+        <p>Change Background Theme:</p>
+        <div class="theme-buttons">
+            <button class="theme-btn default" onclick="changeBackground('default')">
+                Default
+            </button>
+            <button class="theme-btn anime" onclick="changeBackground('anime')">
+                Picture 1
+            </button>
+        </div>
+        <p>Particles Effect:</p>
+        <div class="theme-buttons">
+            <button class="theme-btn particles-on" onclick="toggleParticles(true)">
+                Enable Particles
+            </button>
+            <button class="theme-btn particles-off" onclick="toggleParticles(false)">
+                Disable Particles
+            </button>
+        </div>
+        <!-- Tombol switch untuk partikel salju -->
+        <div class="theme-buttons">
+            <label class="switch">
+                <input type="checkbox" id="snow-toggle" onclick="toggleSnowParticles(this.checked)">
+                <span class="slider"></span>
+            </label>
+            <span class="switch-label">Toggle Snow Particles</span>
+        </div>
+        <p>Play Music:</p>
+        <div class="music-list">
+            <div class="music-item" onclick="playMusic('https://files.catbox.moe/sh5fat.mp3')">
+                <span>Cincin - Hindia</span>
+                <button class="play-btn">▶️Play</button>
+            </div>
+            <div class="music-item" onclick="playMusic('https://files.catbox.moe/xq3eqh.mp3')">
+                <span>Jakarta Hari Ini - For Revenge</span>
+                <button class="play-btn">▶️Play</button>
+            </div>
+            <div class="music-item" onclick="playMusic('https://files.catbox.moe/qexb0f.mp3')">
+                <span>Garam Madu - Fiersa Besari</span>
+                <button class="play-btn">▶️Play</button>
+            </div>
+        </div>
+        <!-- Tombol Stop Music -->
+        <div class="theme-buttons">
+            <button class="theme-btn music-off" onclick="stopMusic()">
+                ⏹️ Stop Music
+            </button>
+        </div>
+    </div>
+    <!-- Particles Container -->
+    <div id="particles-js"></div>
+</div>
+<!-- Partikel Salju -->
+<div id="snow-particles"></div>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <img src="https://files.catbox.moe/sf1y89.jpg" alt="Logo" class="navbar-logo"> <!-- Change this link to your actual logo link -->
+        <div class="navbar-links">
+            <a href="#" class="navbar-link">Home</a>
+            <a href="#" class="navbar-link">About</a>
+            <a href="#" class="navbar-link">Projects</a>
+            <a href="#" class="navbar-link">Skills</a>
+            <a href="https://wa.me/6288804148639" class="navbar-link">Contact</a>
+        </div>
+    </nav>
+
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="loading-screen">
+    <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_raiw2hpe.json" background="transparent" speed="1" style="width: 200px; height: 200px;" loop autoplay></lottie-player>
+  </div>
+    <!-- Profile Section -->
+    <div class="max-w-2xl mx-auto card profile-container animate-fade-in" style="display: none;">
+        <img src="https://files.catbox.moe/aqhx1d.jpg" alt="Profile Picture" class="profile-picture">
+        <h1 class="text-3xl font-bold mt-3 text-white">Whizz Zcoder</h1>
+        <p class="text-sm text-gray-200 mt-2">🌍 Sukabumi, Indonesia</p>
+        <div class="mt-2 text-gray-200 typing-container">
+            <span class="typing-text" id="typing-text"></span>
+            <span class="cursor"></span>
+        </div>
+        <div class="mt-4 flex justify-center gap-4">
+            <a href="https://wa.me/628872904195"
+               class="bg-green-500 text-white p-2 rounded-full hover:bg-green-600 transition flex items-center gap-2">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Logo" class="w-6 h-6">
+                <span class="text-sm">WhatsApp</span>
+            </a>
+            <a href="https://www.instagram.com/whizhaha_666?igsh=dW15dWJpNjV5N2Vv"
+               class="bg-pink-500 text-white p-2 rounded-full hover:bg-pink-600 transition flex items-center gap-2">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram Logo" class="w-6 h-6">
+                <span class="text-sm">Instagram</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Now Playing -->
+    <div class="max-w-2xl mx-auto mt-6 card animate-fade-in" style="display: none;">
+        <div class="now-playing-container">
+            <img src="https://img12.pixhost.to/images/1086/578487894_hidzypedia.jpg" alt="Song Cover" class="album-cover">
+            <div class="now-playing-text">
+                <p class="now-playing-label">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify Logo" class="w-4 h-4">
+                    Now Playing
+                </p>
+                <h2 class="song-title">Cincin</h2>
+                <p class="artist-name">Hindia</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Journey -->
+    <h2 class="text-center text-2xl font-bold mt-8 animate-fade-in bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">🚀 My Journey</h2>
+    <div class="max-w-4xl mx-auto mt-8 space-y-8">
+        <!-- Card 1: Started Learning to Code -->
+        <div class="journey-card animate-fade-in p-8 rounded-xl bg-gradient-to-r from-purple-600 to-pink-700 hover:from-pink-600 hover:to-purple-700 transition-all duration-500 transform hover:scale-105">
+            <div class="flex items-center gap-8">
+                <div class="w-24 h-24 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                    <img src="https://files.catbox.moe/5ct60y.jpg" alt="mlbb Icon" class="w-12 h-12">
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-semibold text-white">Started Learning to mllb</h3>
+                    <p class="text-sm text-purple-100 mt-2">2018 - proficient in playing mobile legends in the role of exp lane, roamer, gold lane
+                    .</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Built My First Bot -->
+        <div class="journey-card animate-fade-in p-8 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-700 hover:from-cyan-600 hover:to-blue-700 transition-all duration-500 transform hover:scale-105">
+            <div class="flex items-center gap-8">
+                <div class="w-24 h-24 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="Bot Icon" class="w-12 h-12">
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-semibold text-white">Built My First Bot</h3>
+                    <p class="text-sm text-blue-100 mt-2">2023 - Initially I understood the basics of WhatsApp bots and knew how to use them and create them.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Created HydroMind -->
+        <div class="journey-card animate-fade-in p-8 rounded-xl bg-gradient-to-r from-green-600 to-teal-700 hover:from-teal-600 hover:to-green-700 transition-all duration-500 transform hover:scale-105">
+            <div class="flex items-center gap-8">
+                <div class="w-24 h-24 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                    <img src="https://files.catbox.moe/mbi3ou.jpg" alt="free fire" class="w-12 h-12">
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-semibold text-white">Started learning to free fire</h3>
+                    <p class="text-sm text-green-100 mt-2">When I first started playing free fire, I was quite skilled at playing free fire games and mastered various weapons.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Current Projects -->
+        <div class="journey-card animate-fade-in p-8 rounded-xl bg-gradient-to-r from-yellow-600 to-orange-700 hover:from-orange-600 hover:to-yellow-700 transition-all duration-500 transform hover:scale-105">
+            <div class="flex items-center gap-8">
+                <div class="w-24 h-24 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1995/1995489.png" alt="Projects Icon" class="w-12 h-12">
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-xl font-semibold text-white">Current Projects</h3>
+                    <p class="text-sm text-yellow-100 mt-2">2025 - create a telegram bot called revelation crasher with various appearances.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skills Section -->
+    <h2 class="text-center text-2xl font-bold mt-8 animate-fade-in bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">🛠️ Skills</h2>
+    <div class="max-w-2xl mx-auto mt-4 space-y-4">
+        <div>
+            <p class="text-sm text-gray-300">Exp lane</p>
+            <div class="progress-bar">
+                <div class="progress" data-progress="80%" style="width: 95%; transition: width 1s ease; background-color: #4ADE80;"></div>
+            </div>
+        </div>
+        <div>
+            <p class="text-sm text-gray-300">gold lane</p>
+            <div class="progress-bar">
+                <div class="progress" data-progress="95%" style="width: 20%; transition: width 1s ease; background-color: #4ADE80;"></div>
+            </div>
+        </div>
+        <div>
+            <p class="text-sm text-gray-300">roamee</p>
+            <div class="progress-bar">
+                <div class="progress" data-progress="50%" style="width: 0%; transition: width 1s ease; background-color: #4ADE80;"></div>
+            </div>
+        </div>
+        <div>
+            <p class="text-sm text-gray-300">jungler</p>
+            <div class="progress-bar">
+                <div class="progress" data-progress="60%" style="width: 70%; transition: width 1s ease; background-color: #4ADE80;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Q&A Section -->
+    <h2 class="text-center text-2xl font-bold mt-8 animate-fade-in text-white">📚 Q & A</h2>
+    <div class="max-w-2xl mx-auto mt-4 qa-container animate-fade-in" style="display: none;">
+        <div class="qa-item" onclick="toggleAnswer(this)">
+            <div style="flex-grow: 1;">
+                <strong>Q: Apakah whiz mempunyai channel YouTube?</strong>
+            </div>
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/expand-arrow.png" class="toggle-icon" />
+            <div class="qa-answer">
+                <p class="mt-2">A: Ya, whiz mempunyai YouTube channel <a href="https://youtube.com/@whizhaha17?si=Cm5bhMltifjcd8II" target="_blank" class="text-blue-400 underline">whizhaha</a>.</p>
+            </div>
+        </div>
+        <div class="qa-item" onclick="toggleAnswer(this)">
+            <div style="flex-grow: 1;">
+                <strong>Q: Apa yang membuatmu tertarik di dunia game dan bot?</strong>
+            </div>
+            <img src="https://img.icons8.com/ios-filled/50/ffffff/expand-arrow.png" class="toggle-icon" />
+            <div class="qa-answer">
+                <p class="mt-2">A: Saya suka tantangan dan perkembangan yang cepat dalam teknologi.</p>
+            </div>
+        </div>
+        <!-- Add more questions here -->
+    </div>
+
+<footer id="footer" class="max-w-2xl mx-auto mt-8 text-center text-gray-400 animate-fade-in" style="display: none;">
+       <p>© 2025 Anggazyy. All rights reserved.</p>
+       <div class="mt-4 flex justify-center gap-4">
+           <a href="https://youtube.com/@whizhaha17?si=Cm5bhMltifjcd8II/" class="text-gray-400 hover:text-purple-500 transition">youTube</a>
+           <a href="https://www.instagram.com/whizhaha_666?igsh=dW15dWJpNjV5N2Vv" class="text-gray-400 hover:text-pink-500 transition">Instagram</a>
+       </div>
+   </footer>
+
+    <script>
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Fade-in animations
+        gsap.utils.toArray(".animate-fade-in").forEach((element) => {
+            gsap.fromTo(element, { opacity: 0, y: 30 }, {
+                opacity: 1,
+                y: 0,
+                duration: 1.2,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: element,
+                    start: "top 90%",
+                    toggleActions: "play none none none"
+                }
+            });
+        });
+
+        const texts = [
+            "Halo perkenalkan aku whiz.",
+            "Saya mempunyai hobi bermain game.",
+            "Saya juga sedikit paham tentang bot.",
+            "babay para pengunjung :)"
+        ];
+
+        let textIndex = 0;
+        let charIndex = 0;
+        const typingText = document.getElementById("typing-text");
+        const cursor = document.querySelector(".cursor");
+
+        function typeText() {
+            if (charIndex < texts[textIndex].length) {
+                typingText.textContent += texts[textIndex].charAt(charIndex);
+                charIndex++;
+                setTimeout(typeText, 100); // Kecepatan mengetik
+            } else {
+                setTimeout(eraseText, 1500); // Waktu sebelum menghapus teks
+            }
+        }
+
+        function eraseText() {
+            if (charIndex > 0) {
+                typingText.textContent = texts[textIndex].substring(0, charIndex - 1);
+                charIndex--;
+                setTimeout(eraseText, 50); // Kecepatan menghapus
+            } else {
+                textIndex = (textIndex + 1) % texts.length;
+                setTimeout(typeText, 500); // Tunggu sebelum mengetik ulang
+            }
+        }
+
+// Fungsi untuk menyembunyikan loading screen dan menampilkan konten
+   function hideLoadingScreen() {
+       const loadingScreen = document.getElementById('loadingScreen');
+       const content = document.querySelectorAll('.animate-fade-in'); // Ambil semua elemen yang perlu ditampilkan
+       const footer = document.getElementById('footer'); // Ambil elemen footer
+
+       // Sembunyikan loading screen
+       loadingScreen.classList.add('hidden');
+
+       // Tampilkan semua elemen yang disembunyikan
+       content.forEach(element => {
+           element.style.display = 'block';
+       });
+
+       // Tampilkan footer
+       footer.style.display = 'block';
+   }
+
+   // Event saat seluruh konten website selesai dimuat
+   window.addEventListener('load', () => {
+       // Simulasi loading selama 3 detik
+       setTimeout(hideLoadingScreen, 3000);
+   });
+
+   // Fallback: Jika event 'load' tidak terpicu, sembunyikan loading screen setelah 5 detik
+   setTimeout(hideLoadingScreen, 5000);
+
+// Fungsi untuk menampilkan/menyembunyikan chat box
+function toggleChat() {
+    const chatBox = document.getElementById('chat-box');
+    if (chatBox.style.display === 'flex') {
+        chatBox.style.display = 'none'; // Sembunyikan chat box
+    } else {
+        chatBox.style.display = 'flex'; // Tampilkan chat box
+    }
+}
+
+// Fungsi untuk menampilkan animasi typing
+function showTypingIndicator() {
+    const typingIndicator = document.getElementById('typing-indicator');
+    typingIndicator.style.display = 'inline-flex';
+}
+
+// Fungsi untuk menyembunyikan animasi typing
+function hideTypingIndicator() {
+    const typingIndicator = document.getElementById('typing-indicator');
+    typingIndicator.style.display = 'none';
+}
+
+// Fungsi untuk menambahkan pesan ke chat box
+function addMessage(sender, text) {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('message', sender);
+
+    if (sender === 'bot') {
+        messageElement.innerHTML = `
+            <div class="bot-profile">
+                <img src="https://img.icons8.com/color/48/000000/robot.png" alt="Bot Profile">
+                <span class="bot-name">Copilot</span>
+            </div>
+            <div class="message-content">${text}</div>
+        `;
+    } else {
+        messageElement.innerHTML = `
+            <div class="message-content">${text}</div>
+        `;
+    }
+
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll ke bawah
+}
+
+// Fungsi untuk mengirim pesan
+function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const message = input.value.trim();
+    if (message) {
+        addMessage('user', message); // Tambahkan pesan pengguna
+        input.value = ''; // Kosongkan input
+        fetchBotResponse(message); // Panggil fungsi untuk mengambil respons bot
+    }
+}
+
+// Fungsi untuk mengambil respons dari bot
+async function fetchBotResponse(userMessage) {
+    const chatMessages = document.getElementById('chat-messages');
+    const typingIndicator = document.getElementById('typing-indicator');
+
+    // Tampilkan animasi typing
+    showTypingIndicator();
+
+    try {
+        // Custom prompt
+        const customPrompt = `Saya adalah Copilot, asisten virtual yang dibuat oleh Anggazyy Zcoder. Saya akan membantu menjawab pertanyaan Anda dengan ramah dan informatif. Jika pertanyaan Anda tidak jelas, saya akan meminta klarifikasi.`;
+
+        // Gabungkan custom prompt dengan pesan pengguna
+        const fullMessage = `${customPrompt}\n\nPertanyaan: ${userMessage}`;
+
+        // Kirim permintaan ke API
+        const apiUrl = `https://fgsi1-restapi.hf.space/api/ai/copilot?text=${encodeURIComponent(fullMessage)}`;
+        const response = await fetch(apiUrl);
+
+        // Periksa respons API
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Sembunyikan animasi typing
+        hideTypingIndicator();
+
+        // Periksa hasil API
+        if (!data.status || !data.data.answer) {
+            console.error("Error from API:", data.message || "No data");
+            addMessage('bot', 'Terjadi kesalahan saat memproses permintaan Anda. Silakan coba lagi.');
+            return;
+        }
+
+        // Tambahkan pesan bot
+        addMessage('bot', data.data.answer);
+    } catch (error) {
+        // Tangani error
+        hideTypingIndicator();
+        console.error("Error processing AI request:", error.message);
+        addMessage('bot', 'Terjadi kesalahan saat mencoba mendapatkan jawaban. Silakan coba lagi nanti.');
+    }
+}
+
+
+// Fungsi untuk mengaktifkan/menonaktifkan partikel
+function toggleParticles(enable) {
+    const particlesContainer = document.getElementById('particles-js');
+    if (enable) {
+        particlesContainer.style.display = 'block';
+        particlesJS.load('particles-js', 'particles-config.json', function() {
+            console.log('Particles.js loaded!');
+        });
+    } else {
+        particlesContainer.style.display = 'none';
+        particlesJS('particles-js').destroy(); // Hentikan partikel
+    }
+}
+
+// Konfigurasi Partikel
+const particlesConfig = {
+    particles: {
+        number: {
+            value: 80,
+            density: {
+                enable: true,
+                value_area: 800
+            }
+        },
+        color: {
+            value: "#4ADE80" // Warna partikel
+        },
+        shape: {
+            type: "circle", // Bentuk partikel
+            stroke: {
+                width: 0,
+                color: "#000000"
+            }
+        },
+        opacity: {
+            value: 0.5,
+            random: false,
+            anim: {
+                enable: false,
+                speed: 1,
+                opacity_min: 0.1,
+                sync: false
+            }
+        },
+        size: {
+            value: 3,
+            random: true,
+            anim: {
+                enable: false,
+                speed: 40,
+                size_min: 0.1,
+                sync: false
+            }
+        },
+        line_linked: {
+            enable: true,
+            distance: 150,
+            color: "#4ADE80",
+            opacity: 0.4,
+            width: 1
+        },
+        move: {
+            enable: true,
+            speed: 6,
+            direction: "none",
+            random: false,
+            straight: false,
+            out_mode: "out",
+            bounce: false,
+            attract: {
+                enable: false,
+                rotateX: 600,
+                rotateY: 1200
+            }
+        }
+    },
+    interactivity: {
+        detect_on: "canvas",
+        events: {
+            onhover: {
+                enable: true,
+                mode: "repulse"
+            },
+            onclick: {
+                enable: true,
+                mode: "push"
+            },
+            resize: true
+        },
+        modes: {
+            repulse: {
+                distance: 100,
+                duration: 0.4
+            },
+            push: {
+                particles_nb: 4
+            }
+        }
+    },
+    retina_detect: true
+};
+
+// Fungsi untuk mengaktifkan/menonaktifkan partikel
+function toggleParticles(enable) {
+    const particlesContainer = document.getElementById('particles-js');
+    if (enable) {
+        particlesContainer.style.display = 'block';
+        particlesJS('particles-js', particlesConfig); // Inisialisasi partikel
+    } else {
+        particlesContainer.style.display = 'none';
+        particlesJS('particles-js').destroy(); // Hentikan partikel
+    }
+}
+
+// Fungsi untuk menampilkan/menyembunyikan popup settings
+function toggleSettingsPopup() {
+    const settingsPopup = document.getElementById('settings-popup');
+    settingsPopup.classList.toggle('active');
+    if (settingsPopup.classList.contains('active')) {
+        toggleParticles(true); // Aktifkan partikel saat popup dibuka
+    } else {
+        toggleParticles(false); // Nonaktifkan partikel saat popup ditutup
+    }
+}
+// Fungsi untuk mengubah background
+function changeBackground(theme) {
+    const body = document.body;
+    if (theme === 'default') {
+        body.style.background = 'linear-gradient(-45deg, #1E1E2E, #2A2A4E, #1E1E3F, #2A2A4E)';
+        body.style.backgroundSize = '400% 400%';
+        body.style.animation = 'gradient 15s ease infinite';
+    } else if (theme === 'anime') {
+        body.style.backgroundImage = 'url(https://files.catbox.moe/ihzbj4.jpg)'; // Ganti dengan URL gambar anime yang Anda inginkan
+        body.style.backgroundSize = 'cover';
+        body.style.backgroundPosition = 'center';
+        body.style.animation = 'none';
+    }
+}
+
+// Ambil elemen audio
+const backgroundMusic = document.getElementById('background-music');
+
+// Fungsi untuk memutar lagu berdasarkan URL
+function playMusic(url) {
+    backgroundMusic.src = url; // Setel sumber lagu
+    backgroundMusic.play(); // Mulai memutar lagu
+}
+
+// Fungsi untuk menghentikan lagu
+function stopMusic() {
+    backgroundMusic.pause(); // Hentikan lagu
+    backgroundMusic.currentTime = 0; // Reset waktu lagu ke awal
+}
+// Event listener untuk mengirim pesan dengan tombol Enter
+document.getElementById('chat-input').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
+
+// Konfigurasi partikel salju
+const snowParticlesConfig = {
+    particles: {
+        number: {
+            value: 100, // Jumlah partikel salju
+            density: {
+                enable: true,
+                value_area: 800
+            }
+        },
+        color: {
+            value: "#FFFFFF" // Warna partikel salju (putih)
+        },
+        shape: {
+            type: "circle", // Bentuk partikel salju
+        },
+        opacity: {
+            value: 0.7, // Tingkat transparansi partikel
+            random: true,
+            anim: {
+                enable: true,
+                speed: 0.5,
+                opacity_min: 0.1,
+                sync: false
+            }
+        },
+        size: {
+            value: 5, // Ukuran partikel salju
+            random: true,
+            anim: {
+                enable: true,
+                speed: 2,
+                size_min: 1,
+                sync: false
+            }
+        },
+        line_linked: {
+            enable: false // Tidak perlu garis penghubung untuk salju
+        },
+        move: {
+            enable: true,
+            speed: 2, // Kecepatan jatuh salju
+            direction: "bottom", // Arah jatuh salju
+            random: true,
+            straight: false,
+            out_mode: "out",
+            bounce: false,
+            attract: {
+                enable: false,
+                rotateX: 600,
+                rotateY: 1200
+            }
+        }
+    },
+    interactivity: {
+        detect_on: "canvas",
+        events: {
+            onhover: {
+                enable: false // Tidak perlu interaksi hover untuk salju
+            },
+            onclick: {
+                enable: false // Tidak perlu interaksi klik untuk salju
+            },
+            resize: true
+        }
+    },
+    retina_detect: true
+};
+
+// Inisialisasi partikel salju
+particlesJS('snow-particles', snowParticlesConfig);
+
+// Fungsi untuk mengaktifkan/menonaktifkan partikel salju
+function toggleSnowParticles(enable) {
+    const snowParticlesContainer = document.getElementById('snow-particles');
+    if (enable) {
+        snowParticlesContainer.style.display = 'block';
+        particlesJS('snow-particles', snowParticlesConfig); // Inisialisasi partikel salju
+    } else {
+        snowParticlesContainer.style.display = 'none';
+        particlesJS('snow-particles').destroy(); // Hentikan partikel salju
+    }
+}
+        
+        function toggleAnswer(element) {
+            const answer = element.querySelector('.qa-answer');
+            const icon = element.querySelector('.toggle-icon');
+            if (answer.style.maxHeight) {
+                answer.style.maxHeight = null;
+                icon.style.transform = "rotate(0deg)";
+            } else {
+                answer.style.maxHeight = answer.scrollHeight + "px";
+                icon.style.transform = "rotate(180deg)";
+            }
+        }
+    </script>
+</body>
+
+</html>
